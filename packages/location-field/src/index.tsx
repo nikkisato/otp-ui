@@ -460,9 +460,9 @@ const LocationField = ({
                 const results = hasResults
                   ? intl.formatList(parts, { type: "conjunction" })
                   : intl.formatMessage({
-                      description: "Indicates no results",
-                      id: "otpUi.LocationField.noResults"
-                    });
+                    description: "Indicates no results",
+                    id: "otpUi.LocationField.noResults"
+                  });
                 const resultsFoundText = intl.formatMessage(
                   {
                     description: "Text about geocoder results found",
@@ -724,8 +724,8 @@ const LocationField = ({
   const indexedOptionLookup: IndexedOptionLookup = [];
   const userLocationRenderData = showUserSettings
     ? userLocationsAndRecentPlaces.map(loc =>
-        getRenderData(loc, setLocation, UserLocationIconComponent, intl)
-      )
+      getRenderData(loc, setLocation, UserLocationIconComponent, intl)
+    )
     : [];
 
   const pushToIndexedOptions = (locationSelected, id) => {
@@ -1019,8 +1019,8 @@ const LocationField = ({
     const errorText = !currentPosition
       ? undefined
       : typeof currentPosition.error === "string"
-      ? currentPosition.error
-      : currentPosition.error.message;
+        ? currentPosition.error
+        : currentPosition.error.message;
 
     optionTitle = addInParentheses(intl, locationUnavailableText, errorText);
     positionUnavailable = true;
@@ -1033,6 +1033,7 @@ const LocationField = ({
   pushToIndexedOptions(locationSelected, optionId);
 
   if (!suppressNearby) {
+
     // Create and add the option item to the menu items array
     menuItems.push(
       <Option
@@ -1060,8 +1061,13 @@ const LocationField = ({
     statusMessages.push(message);
   }
 
+  const actionableItems = indexedOptionLookup.filter(event => typeof event.locationSelected === "function")
+  const actionableItemsLength = indexedOptionLookup.filter(event => typeof event.locationSelected === "function").length
+
   // Store the number of location-associated items for reference in the onKeyDown method
-  let menuItemCount = indexedOptionLookup.length;
+  let menuItemCount = actionableItemsLength;
+
+  console.log("actionableItems", actionableItems);
 
   /** the text input element * */
   // Use this text for aria-label below if no user-provided label.
@@ -1134,7 +1140,7 @@ const LocationField = ({
         onClick={onDropdownToggle}
         tabIndex={-1}
         type="button"
-        aria-disabled={hasNoEnabledOptions}
+        aria-disabled={!actionableItems}
       >
         <LocationIconComponent locationType={locationType} />
       </S.DropdownButton>
@@ -1164,26 +1170,28 @@ const LocationField = ({
           id: "otpUi.LocationField.suggestedLocations"
         })}
         id={listBoxId}
+        $menuItemCountProp={menuItemCount}
       >
-        {isStatic ? (
-          menuItems.length > 0 ? ( // Show typing prompt to avoid empty screen
-            menuItems
+        {isStatic && menuItemCount >= 1
+          ? (
+            menuItems.length > 0 ? ( // Show typing prompt to avoid empty screen
+              menuItems
+            ) : (
+              <S.MenuGroupHeader as="div">
+                <FormattedMessage
+                  defaultMessage={
+                    defaultMessages["otpUi.LocationField.beginTypingPrompt"]
+                  }
+                  description="Text to show as initial placeholder in location search field"
+                  id="otpUi.LocationField.beginTypingPrompt"
+                />
+              </S.MenuGroupHeader>
+            )
           ) : (
-            <S.MenuGroupHeader as="div">
-              <FormattedMessage
-                defaultMessage={
-                  defaultMessages["otpUi.LocationField.beginTypingPrompt"]
-                }
-                description="Text to show as initial placeholder in location search field"
-                id="otpUi.LocationField.beginTypingPrompt"
-              />
-            </S.MenuGroupHeader>
-          )
-        ) : (
-          menuVisible && menuItems
-        )}
+            menuVisible && menuItems
+          )}
       </ItemList>
-    </S.InputGroup>
+    </S.InputGroup >
   );
 };
 

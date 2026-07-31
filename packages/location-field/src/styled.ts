@@ -1,6 +1,10 @@
 import styled, { css, keyframes } from "styled-components";
 import { Spinner as FASpinner } from "@styled-icons/fa-solid/Spinner";
 
+type MenuItemListProps = {
+ menuItemCountProp?: number
+};
+
 const hiddenCss = css`
   clip: rect(0, 0, 0, 0);
   display: inline-block;
@@ -34,18 +38,18 @@ export const DropdownButton = styled(BaseButton)`
 
 export const MenuItemList = styled.ul.attrs({
   role: "listbox"
-})`
+})<MenuItemListProps>`
   background-clip: padding-box;
   background-color: #fff;
   border-radius: 4px;
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  border:${({ $menuItemCountProp }) => $menuItemCountProp === 0 ? "none": "1px solid rgba(0, 0, 0, 0.15)"};
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
   float: left;
   font-size: 14px;
   left: 0;
   list-style: none;
   margin: 2px 0 0;
-  min-width: 160px;
+  min-width: ${({ $menuItemCountProp }) => $menuItemCountProp === 0 ? "0px": "160px"};
   max-height: 75vh;
   padding: 0 0 5px 0;
   position: absolute;

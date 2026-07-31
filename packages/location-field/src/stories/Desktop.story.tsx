@@ -296,3 +296,16 @@ export const WithCustomLabel = (): JSX.Element => (
     />
   </>
 );
+
+
+export const SuprpressNearby  = (): JSX.Element => (
+  <LocationField
+    currentPosition={currentPosition}
+    geocoderConfig={geocoderConfig}
+    getCurrentPosition={getCurrentPosition}
+    inputPlaceholder="Select from location"
+    locationType="from"
+    onLocationSelected={onLocationSelected}
+    suppressNearby
+  />
+);
